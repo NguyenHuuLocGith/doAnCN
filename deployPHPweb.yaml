@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: myappsql
+spec:
+  type: LoadBalancer
+  selector:
+    app: myappsql
+    tier: frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  labels:
+    app: myappsql
+    tier: frontend
+spec:
+  selector:
+    matchLabels:
+      app: myappsql
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: myappsql
+        tier: frontend
+    spec:
+      containers:
+      - name: myapp
+        image: lochub/imagewebphp:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+
+
+
+
